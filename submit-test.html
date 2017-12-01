@@ -1,0 +1,57 @@
+<html>
+<body>
+
+<div id="result"></div>
+
+<script>
+
+function make_xhr() {
+    var oReq = new XMLHttpRequest();
+    oReq.addEventListener("load", function reqListener () {
+        document.getElementById('result').innerText = this.responseText
+    });
+    return oReq;
+}
+
+
+function post_json() {
+    var oReq = make_xhr()
+    oReq.open("POST", "http://localhost:8888/json");
+    oReq.setRequestHeader("Content-Type", "application/json");
+    oReq.send( JSON.stringify({a:'b',c:'d'}) );
+}
+
+
+function post_form_urlencode() {
+    var oReq = make_xhr()
+    oReq.open("POST", "http://localhost:8888/formurlencode");
+    oReq.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    oReq.send( 'a=b&c=d' );
+}
+
+
+function post_text_plain() {
+    var oReq = make_xhr()
+    oReq.open("POST", "http://localhost:8888/text");
+    oReq.setRequestHeader("Content-Type", "text/plain");
+    oReq.send( 'a=b\r\nc=d' );
+}
+
+
+function post_form_data() {
+    var oReq = make_xhr()
+    oReq.open("POST", "http://localhost:8888/formdata");
+    oReq.setRequestHeader("Content-Type", "multipart/form-data; boundary=AaB03x");
+    var boundary = '\r\n--AaB03x\r\n'
+    var data = [boundary, 'a=b', boundary, 'c=d'].join('') + '\r\n--AaB03x--\r\n'
+    oReq.send( data  );
+}
+
+
+setTimeout(post_form_data, 1000)
+</script>
+
+<br />
+test_body
+</body>
+</html>

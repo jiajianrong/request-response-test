@@ -1,0 +1,110 @@
+<html>
+<head><meta charset="utf-8"/></head>
+<body>
+
+<div id="result"></div>
+<br /><br /><br />
+
+
+
+
+input的onchange事件触发提交 <input type="file" name="avatar" onchange="post_form_data()" />
+<br /><br /><br />
+
+
+
+
+
+<form enctype="text/plain">
+    <input type="text" name="user"/>
+    <input type="file" name="logo"/>
+    <a href=":;" onclick="post_native_form()">sumbit form</a>
+</form>
+<br /><br /><br />
+
+
+
+
+input的onchange事件触发提交(FileReader) <input type="file" name="filereader" id="filereader" onchange="post_reader_data()" />
+
+
+
+<script>
+
+
+/** 自定义FormData
+ */
+function post_form_data() {
+    
+    var formData = new FormData();
+    
+    formData.append("username", "jiajianirong");
+    formData.append("userfile", document.getElementById('avatar').files[0]);
+    formData.append("xmlfile", new Blob(['<a id="a"><b id="b">hey!</b></a>'], {type: "text/xml"}));
+    
+    
+    var oReq = new XMLHttpRequest();
+    oReq.addEventListener("load", function reqListener () {
+        document.getElementById('result').innerText = this.responseText
+    });
+    
+    oReq.open("POST", "http://localhost:8888/formdata");
+    //Content-Type:multipart/form-data; boundary=----WebKitFormBoundaryBkkvZOMKOMcNlk4U
+    
+    oReq.send(formData);
+    
+}
+
+
+
+/** 表单FormData
+ */
+function post_native_form() {
+    
+    var formData = new FormData(document.forms[0]);
+    
+    var oReq = new XMLHttpRequest();
+    oReq.addEventListener("load", function reqListener () {
+        document.getElementById('result').innerText = this.responseText
+    });
+    
+    oReq.open("POST", "http://localhost:8888/formdata");
+    //Content-Type:multipart/form-data; boundary=----WebKitFormBoundaryBkkvZOMKOMcNlk4U
+    
+    oReq.send(formData);
+    
+}
+
+
+
+/** 自定义FormData(FileReader)
+ */
+function post_reader_data() {
+    
+    var fr = new FileReader();
+    fr.customizedId = 111;
+    fr.owner = this;
+    fr.onload = function(e) {
+        var content = e.target.result
+        
+        var oReq = new XMLHttpRequest();
+        oReq.addEventListener("load", function reqListener () {
+            document.getElementById('result').innerText = this.responseText
+        });
+        
+        oReq.open("POST", "http://localhost:8888/formdata");
+        oReq.setRequestHeader("Content-Type", "text/plain");
+        
+        oReq.send(content);
+    }
+    
+    var f = document.getElementById('filereader').files[0];
+    fr.readAsBinaryString(f);
+    
+}
+
+
+
+</script>
+</body>
+</html>
