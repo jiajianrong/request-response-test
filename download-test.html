@@ -1,0 +1,68 @@
+<html>
+<head><meta charset="utf-8"/></head>
+<body>
+
+<div id="result"></div>
+<img id="img" border=1 height=100 width=100 />
+<br /><br /><br />
+
+
+
+
+<a href="javascript:;" onclick="get_blob()">download blob</a>
+<a href="javascript:;" onclick="get_array()">download array</a>
+<a href="http://localhost:8888/download_file" download="download_in_browser.jpg">download file</a>
+<br /><br /><br />
+
+
+
+
+<script>
+
+function get_blob() {
+    
+    var img = document.getElementById('img');
+    
+    var oReq = new XMLHttpRequest();
+    oReq.addEventListener("load", function reqListener () {
+        // 注意:不是oReq.responseText
+        img.src = window.URL.createObjectURL(oReq.response);
+    });
+    
+    oReq.open("GET", "http://localhost:8888/download_buffer");
+    oReq.responseType = "blob"; //  "arraybuffer", "blob", "document", "text"
+    
+    oReq.send();
+    
+}
+
+
+
+function get_array() {
+    
+    var div = document.getElementById('result');
+    var img = document.getElementById('img');
+    
+    var oReq = new XMLHttpRequest();
+    oReq.addEventListener("load", function reqListener () {
+        // 注意:不是oReq.responseText
+        var arrayBuffer = oReq.response;
+        if (arrayBuffer) {
+            var byteArray = new Uint8Array(arrayBuffer);
+            div.innerHTML = byteArray;
+            
+            var blob = new Blob([byteArray], { "type": "image/jpg" });  
+            img.src = window.URL.createObjectURL(blob);
+        }
+    });
+    
+    oReq.open("GET", "http://localhost:8888/download_buffer");
+    oReq.responseType = "arraybuffer"; //  "arraybuffer", "blob", "document", "text"
+    
+    oReq.send();
+    
+}
+
+</script>
+</body>
+</html>
