@@ -1,0 +1,32 @@
+<html>
+<body>
+<a href="data:text/plain;charset=utf-8,abcdefg" download = 'download_directly.txt';>download_directly</a>
+
+<a href="javascript:;" id="ahref" onclick="download_by_script()">download_by_script</a>
+</body>
+<script>
+
+function download_by_script() {
+    var herfEl = document.getElementById('ahref')
+    herfEl.href = 'data:text/plain;charset=utf-8,abcdefg'
+    //herfEl.target = '_blank'
+    herfEl.download = 'download_by_script.txt';
+}
+
+
+function download_another_way() {
+    var blob = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"});
+    var url = window.URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    a.href = url;
+    a.download = "helle.txt";
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+
+download_another_way()
+
+</script>
+</html>
